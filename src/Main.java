@@ -1,25 +1,29 @@
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Scanner;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.min;
 
 public class Main {
     public static void main(String[] args) {
+
+        //Get runtime
+        long startTime = System.nanoTime();
+
         Scanner scanner = new Scanner(System.in);
-        int firstCardDrawn = scanner.nextInt();
+        int firstRandomNumber = scanner.nextInt();
+        int target = firstRandomNumber * 21;
         int numberOfDifferentCardValues = scanner.nextInt();
 
         ArrayList<Integer> valuesAvailable = new ArrayList<>();
         for (int i = 0; i < numberOfDifferentCardValues; i++) {
             valuesAvailable.add(scanner.nextInt());
         }
-        int target = firstCardDrawn* 21;
 
         System.out.println("target: " + target);
         System.out.println("valuesAvailable: " + valuesAvailable);
 
-        //Dynamic programming coin change problem
+        //Dynamic programming coin change problem variant, casino themed.
         int[] dp = new int[target+1];
         //Base case is if we need to hit target 0, we can do so with 0 cards.
         dp[0] = 0;
@@ -37,19 +41,26 @@ public class Main {
             }
         }
 
-        System.out.println("Minimum cards:" + dp[target]);
-        //Print the different cards used
-        System.out.println("Cards used:");
-        int x = target;
-        while (x > 0) {
-            for (var c : valuesAvailable) {
-                if (x-c >= 0 && dp[x] == dp[x-c]+1) {
-                    System.out.println(c);
-                    x -= c;
-                    break;
-                }
-            }
+        //Lowest card is 1, so if dp[target] is above our target, we can't reach it, as value was never changed from MAX_VALUE.
+        if (abs(dp[target]) > target) {
+            System.out.println("Impossible");
         }
-
+        else {
+            System.out.println("Minimum cards:" + dp[target]);
+            ////Print the different cards used
+            //System.out.println("Cards used:");
+            //int x = target;
+            //while (x > 0) {
+            //    for (var c : valuesAvailable) {
+            //        if (x - c >= 0 && dp[x] == dp[x - c] + 1) {
+            //            System.out.println(c);
+            //            x -= c;
+            //            break;
+            //        }
+            //    }
+            //}
+        }
+        //Print runtime in milliseconds
+        System.out.println("Runtime: " + (System.nanoTime() - startTime)/1000000 + "ms");
     }
 }
